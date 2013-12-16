@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # Class parser for Markdown formatted lists
 from re import compile
-from minMapNode import MindMapNode
+from tools import *
+from mindMapNode import MindMapNode
 
 class ListParser(object):
 
     def __init__(self):
-        indent = 4  # Number of spaces representing and indentation
-        indent_pattern = '\s{%d, %d}' % indent
+        self.base_indent = 4  # Number of spaces representing and indentation
+        indent_pattern = '\s'
         self.compiler = compile(indent_pattern)
         self.markers = ['-','+','*']
+        self.node_cnt = 0
 
 
     def isMainTopic(self, line):
@@ -17,51 +19,77 @@ class ListParser(object):
             return True
         return False
 
-    def getIndentLev(self, raw_note):
+    def get_indent(self, raw_note):
         assert type(raw_note) == str
-
+        
         indent_lev = 0
         first_marker_pos = len(raw_note)
         note_marker = None
-
+        
         for marker in self.markers:
             pos = raw_note.find(marker)
-            if pos < first_marker_pos:
+                        
+            if -1 < pos < first_marker_pos:
                 first_marker_pos = pos
                 note_marker = marker
-
+                        
         if len(raw_note) != first_marker_pos and None != note_marker:
-            indentation = raw_note.split(marker)[0]
-            indent_lev = len(self.compiler.findall(indentation))
+            split = raw_note.split(note_marker)
+            indent_lev = len(self.compiler.findall(split[0])) / self.base_indent
 
         return indent_lev
+        
+    def purge_empty_lines(self, notes):
+        pass       
+               
+    def get_node_id(self, indent_lev):
+        id = '%d-%d' % (indent_lev, self.node_cnt)
+        self.node_cnt += 1
+        return id
 
-    def parse(self, note):
-        assert type(note) == list
-        assert note[0].startswith('#')
+    def parse(self, notes):
+        assert type(notes) == list
+        
+        if not notes[0].startswith('#'):
+            error('First line of the notes must start with # (The name of the list)')
+            return
 
-        curr_node_id = 0
-        root = MindMapNode(node_id=curr_node_id, parent_id=None, note=line, indent_lev=0)
-        parent = root
-        prev_node = None
+        hooks = {}  # NodeID:NodeItem of all parent Nodes (Nodes that have children)
+        items = {}  # Complete dict of all Nodes
+        
+        ind_root = -1
+        root_id = self.get_node_id(ind_root)
+        root = MindMapNode(root_id, None, notes[0], ind_root)
+                
+        items.update({root_id: root})
+        hooks.update({ind_root: root})
+        
+        info('Root %s' % repr(root))                              
 
-        for line in note[1:]:
-            curr_node_id += 1
-            indent_lev = getIndentLev(line)
+        for line in notes[1:]:
+            # get indentation level
+            ind = self.get_indent(line)
+            node_id = self.get_node_id(ind)
+            node = MindMapNode(node_id, None, line, ind)           
 
-            if prev_node:
-                if prev_node.indent_lev < indent_lev:
-                    parent = prev_node
-
-            node = MindMapNode(node_id = curr_node_id,
-                               parent_id = parent.id,
-                               note = line,
-                               indent_lev = indent_lev)
-
-
-
-
-
-
-
+            info('Created node %s' % repr(node))            
+            
+            # update items
+            items.update({node_id:node})
+                        
+            # update hooks
+            hooks[ind] = node
+            
+            # update parent/child relationship
+            if hooks.has_key(ind - 1):
+                parent_id = hooks[ind - 1].id
+            else:
+                parent_id = root.id
+            
+            info('Adding child %s to parent: %s' % (node.id, parent_id))
+            
+            items[parent_id].children.append(node)
+            node.parent = items[parent_id]
+            
+            info('Updated node %s' % repr(node))            
 
