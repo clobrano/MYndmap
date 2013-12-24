@@ -2,7 +2,7 @@
 # Class parser for Markdown formatted lists
 from re import compile
 from tools import *
-from mindMapNode import MindMapNode
+from myndmapnode import MYndMapNode
 
 class ListParser(object):
 
@@ -53,7 +53,9 @@ class ListParser(object):
         if not notes[0].startswith('#'):
             error('First line of the notes must start with # (The name of the list)')
             return
-
+        
+        myndmap = MYndMap()
+        
         hooks = {}  # NodeID:NodeItem of all parent Nodes (Nodes that have children)
         items = {}  # Complete dict of all Nodes
         
@@ -63,6 +65,9 @@ class ListParser(object):
                 
         items.update({root_id: root})
         hooks.update({ind_root: root})
+        
+        myndmap.set_root(notes[0])
+                
         
         info('Root %s' % repr(root))                              
 

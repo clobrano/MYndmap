@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Class wrapper for a list item that represents also a node of the MindMap
 
-class MindMapNode(object):
+class MYndMapNode(object):
 
     def __init__(self, node_id, parent, raw_note, indent_lev):
         assert type(node_id)    == str
