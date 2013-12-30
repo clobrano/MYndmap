@@ -1,5 +1,4 @@
 # MainTopic
-
 - first **formatted** line
 - second *line with some italic*
 - third line `with comments`

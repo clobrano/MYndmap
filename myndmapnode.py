@@ -12,14 +12,14 @@ class MYndMapNode(object):
         self.parent = parent
         self.raw_note = r'%s' % raw_note
         self.indent_lev = indent_lev
-        self.rich_text_note = self.raw_note.strip()
+        self.rtf_note = self.raw_note.strip()
         self.children = []
-        
+
     def __repr__(self):
         if not self.parent is None:
             parent_id = self.parent.id
         else:
             parent_id = "None"
-            
-        return '{id:%s, parent_id:%s, ind:%d, note:%s}' % (self.id, parent_id, self.indent_lev, self.rich_text_note)
+
+        return '{id:%s, parent_id:%s, ind:%d, note:%s}' % (self.id, parent_id, self.indent_lev, self.rtf_note)
 
