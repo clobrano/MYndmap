@@ -14,7 +14,6 @@ class ListParser(object):
         self.markers = ['-','+','*']
         self.node_cnt = 0
 
-
     def isMainTopic(self, line):
         if line.startswith('#'):
             return True
