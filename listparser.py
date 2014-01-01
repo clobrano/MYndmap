@@ -10,13 +10,9 @@ class ListParser(object):
     def __init__(self):
         self._base_indent = 4  # Number of spaces representing and indentation
         self._compiler = compile('\s')
+        self._valid_line_compiler = compile('\w')
         self._markers = ['-','+','*']
         self._node_cnt = 0
-
-    def isMainTopic(self, line):
-        if line.startswith('#'):
-            return True
-        return False
 
     def get_indent(self, raw_note):
         assert type(raw_note) == str
@@ -38,6 +34,9 @@ class ListParser(object):
 
         return indent_lev
 
+    def is_valid(self, line):
+        return len(self._valid_line_compiler.findall(line)) > 0
+
     def parse(self, notes):
         assert type(notes) == list
 
@@ -49,8 +48,8 @@ class ListParser(object):
         self.myndmap.set_root(notes[0])
 
         for line in notes[1:]:
-            log.debug('line "%s" is empty? %s' % (line, line == ''))
-            if line == '':
+            log.debug('line "%s" is valid? %s' % (line, self.is_valid(line.strip())))
+            if not self.is_valid(line):
                 continue
             # get indentation level
             ind = self.get_indent(line)
