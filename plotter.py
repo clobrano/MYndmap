@@ -15,7 +15,7 @@ class GraphVizPlot:
         self._graph = None
         self._color_index = 0
 
-        self._dot_config = {'shape':'rect', 'style':'rounded, filled', 'color':True, 'fillcolor':True, 'fontname':'din', 'fontsize':'12'}
+        self._dot_config = {'shape':'plaintext', 'style':None, 'color':True, 'fillcolor':True, 'fontname':'din', 'fontsize':'12'}
         self._edge_config = {'arrowhead':'vee'}
 
     def save_svg(self, filename):
@@ -41,7 +41,7 @@ class GraphVizPlot:
 
         for child_node in parent_node.children:
             if parent_node.is_root():
-                child_dot_color = GraphVizPlot.COLOR_LIST[self._color_index]
+                child_node.color = GraphVizPlot.COLOR_LIST[self._color_index]
                 self._color_index += 1
 
             if child_node.color is None:
@@ -122,8 +122,16 @@ class WopiGraphViz(GraphVizPlot):
 
     def __init__(self):
         super(WopiGraphViz, self).__init__()
-        self.root = Dot(graph_type='digraph', layout='twopi', overlap='false', splines='true', rankdir='TB')
+        self.root = Dot(graph_type='digraph', layout='twopi', overlap='false', splines='true')
 
     def plot(self, root):
         super(WopiGraphViz, self).plot(root)
 
+class NeatoGraphViz(GraphVizPlot):
+
+    def __init__(self):
+        super(NeatoGraphViz, self).__init__()
+        self.root = Dot(graph_type='digraph', layout='neato', overlap='false', splines='true')
+
+    def plot(self, root):
+        super(NeatoGraphViz, self).plot(root)
