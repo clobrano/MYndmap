@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from pydot import Dot, Node, Edge
 from listparser import *
+from plotter import *
 
 color_list = ['red', 'blue', 'green', 'orange', '#E6E600', 'purple']
 light_colors = {'red': '#FFB5C6', 'blue':'#B5B8FF', 'green':'#BEFFB5', 'orange':'#FFE9B5', '#E6E600':'#FFFFB5', 'purple':'#F0B5FF'}
@@ -77,7 +78,7 @@ def plot(graph, parent_node):
 if __name__ == '__main__':
     ls = ListParser()
 
-    notes = [line for line in open('todo.md', 'r')]
+    notes = [line for line in open('plotter.md', 'r')]
     ls.parse(notes)
 
     root = ls.myndmap.root
@@ -88,3 +89,12 @@ if __name__ == '__main__':
     plot(graph, root)
     graph.write_svg('todo.svg')
     graph.write_png('todo.png')
+
+    dotGraph = DotGraphViz()
+    dotGraph.plot(root)
+    dotGraph.save_svg('todo2.svg')
+
+    wgraph = WopiGraphViz()
+    wgraph.plot(root)
+    wgraph.save_png('todo2.png')
+

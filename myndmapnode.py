@@ -25,6 +25,9 @@ class MYndMapNode(object):
         assert type(color) == str
         self._color = color
 
+    def is_root(self):
+        return self.parent == None
+
     def __repr__(self):
         if not self.parent is None:
             parent_id = self.parent.id
