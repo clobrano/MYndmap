@@ -1,0 +1,6 @@
+*.txt
+*.md
+*.pyc
+*.svg
+*~
+*.log
