@@ -61,7 +61,7 @@ class MYndMap(object):
 
         node_parent.children.append(node)
 
-        print('add node: %s' % repr(node))
+        debug('add node: %s' % repr(node))
 
         self._hooks.update({node_indent: node})
         self._nodes.update({node_id: node})

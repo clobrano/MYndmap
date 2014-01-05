@@ -110,9 +110,9 @@ class GraphVizPlot:
 
 class DotGraphViz(GraphVizPlot):
 
-    def __init__(self):
+    def __init__(self, rankdir='LR'):
         super(DotGraphViz, self).__init__()
-        self.root = Dot(graph_type='digraph', layout='dot', rankdir='LR')
+        self.root = Dot(graph_type='digraph', layout='dot', rankdir=rankdir)
 
     def plot(self, root):
         super(DotGraphViz, self).plot(root)
