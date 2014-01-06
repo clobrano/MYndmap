@@ -14,9 +14,16 @@ class GraphVizPlot:
     def __init__(self):
         self._graph = None
         self._color_index = 0
+        self._color_len = len(GraphVizPlot.COLOR_LIST)
 
         self._dot_config = {'shape':'plaintext', 'style':None, 'color':True, 'fillcolor':True, 'fontname':'din', 'fontsize':'12'}
         self._edge_config = {'arrowhead':'vee'}
+
+    @property
+    def color(self):
+        idx = self._color_index % self._color_len
+        self._color_index += 1
+        return GraphVizPlot.COLOR_LIST[idx]
 
     def save_svg(self, filename):
         self._graph.write_svg(filename)
@@ -41,8 +48,7 @@ class GraphVizPlot:
 
         for child_node in parent_node.children:
             if parent_node.is_root():
-                child_node.color = GraphVizPlot.COLOR_LIST[self._color_index]
-                self._color_index += 1
+                child_node.color = self.color
 
             if child_node.color is None:
                 child_node.color = parent_node.color  ## The color property is 'inheredited' to keep the same color along the branches
